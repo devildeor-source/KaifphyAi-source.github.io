@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Admin Panel</title>
+</head>
+
+<body>
+
+<h2>Upload Knowledge File</h2>
+
+<input type="file" id="file">
+<button onclick="upload()">Upload</button>
+
+<h2>User Searches</h2>
+
+<button onclick="load()">Refresh</button>
+
+<ul id="list"></ul>
+
+<script>
+
+async function upload(){
+
+ let file=document.getElementById("file").files[0];
+
+ let form=new FormData();
+
+ form.append("file",file);
+
+ await fetch("/upload",{
+  method:"POST",
+  body:form
+ });
+
+ alert("File Uploaded");
+
+}
+
+async function load(){
+
+ let res=await fetch("/searches");
+
+ let data=await res.json();
+
+ let list=document.getElementById("list");
+
+ list.innerHTML="";
+
+ data.forEach(q=>{
+
+  let li=document.createElement("li");
+
+  li.innerText=q;
+
+  list.appendChild(li);
+
+ });
+
+}
+
+</script>
+
+</body>
+
+</html>
