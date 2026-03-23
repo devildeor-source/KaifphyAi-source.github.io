@@ -1,15 +1,18 @@
 {
-  "name": "kaifphy-ai",
+  "name": "physics-support-ai",
   "version": "1.0.0",
-  "description": "AI backend",
-  "main": "server.js",
+  "description": "PDF and Physics Formula Finder",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node index.js"
   },
   "dependencies": {
-    "cors": "^2.8.5",
     "express": "^4.18.2",
-    "multer": "^1.4.5-lts.1"
-    "pdf-parse": "^1.1.1"
+    "multer": "^1.4.5-lts.1",
+    "pdf-parse": "^1.1.1",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }
