@@ -1,66 +1,64 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-<title>Admin Panel</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaifphy AI - Admin</title>
+    <style>
+        body { background-color: #000; color: #fff; font-family: sans-serif; padding: 20px; }
+        .container { max-width: 500px; margin: auto; border: 1px solid #333; padding: 20px; border-radius: 10px; }
+        input, button { width: 100%; margin: 10px 0; padding: 10px; border-radius: 5px; border: none; }
+        button { background-color: #0080ff; color: white; cursor: pointer; }
+        #status { color: #00ff00; margin-top: 10px; }
+    </style>
 </head>
-
 <body>
 
-<h2>Upload Knowledge File</h2>
-
-<input type="file" id="file">
-<button onclick="upload()">Upload</button>
-
-<h2>User Searches</h2>
-
-<button onclick="load()">Refresh</button>
-
-<ul id="list"></ul>
+<div class="container">
+    <h2>Upload Knowledge File</h2>
+    <input type="file" id="fileInput" accept=".pdf">
+    <button onclick="uploadFile()">Upload to AI</button>
+    <div id="status"></div>
+</div>
 
 <script>
+    async function uploadFile() {
+        const fileInput = document.getElementById('fileInput');
+        const status = document.getElementById('status');
+        
+        if (fileInput.files.length === 0) {
+            alert("Please select a file first!");
+            return;
+        }
 
-async function upload(){
+        status.innerText = "Uploading...";
 
- let file=document.getElementById("file").files[0];
+        const formData = new FormData();
+        // CRITICAL: The first argument 'file' MUST match index.js
+        formData.append('file', fileInput.files[0]);
 
- let form=new FormData();
+        try {
+            // Using relative path "/" works automatically on Render
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
 
- form.append("file",file);
+            const result = await response.json();
 
- await fetch("/upload",{
-  method:"POST",
-  body:form
- });
-
- alert("File Uploaded");
-
-}
-
-async function load(){
-
- let res=await fetch("/searches");
-
- let data=await res.json();
-
- let list=document.getElementById("list");
-
- list.innerHTML="";
-
- data.forEach(q=>{
-
-  let li=document.createElement("li");
-
-  li.innerText=q;
-
-  list.appendChild(li);
-
- });
-
-}
-
+            if (response.ok) {
+                status.innerText = "✅ Upload Successful!";
+                console.log(result.text); // See the extracted text in console
+            } else {
+                status.innerText = "❌ Upload Failed: " + result.message;
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            status.innerText = "❌ Connection Error. Check Render Logs.";
+        }
+    }
 </script>
 
 </body>
-
 </html>
+
